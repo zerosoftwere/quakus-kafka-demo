@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>producer - 1.0.0-SNAPSHOT</title>
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">-->
+    <style>
+      html {
+        font-size: 62.5%;
+      }
+
+      body {
+        font-size: 1.6rem;
+        color: #646464;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      main {
+        max-width: 540px;
+        margin: auto;
+        margin-top: 6rem;
+      }
+
+      form label {
+        display: block;
+      }
+
+      .form-group {
+        margin-bottom: 1.2rem;
+      }
+
+      input.form-control {
+        outline: none;
+        padding: 0.6rem;
+        width: 100%;
+        border-radius: 4px;
+        border: 1px solid #c7c7c7;
+        box-sizing: border-box;
+      }
+
+      input.form-control:focus {
+        box-shadow: 0px 0px 4px rgba(0, 0, 0, .2);
+      }
+
+      .btn {
+        position: relative;
+        padding: 0.8rem 1.2rem;
+        border: 1px solid gray;
+        border-radius: 4px;
+        color: #4e4e4e;
+        font-weight: 400;
+        box-shadow: 1px 1px 4px rgba(0, 0, 0, .1);
+      }
+
+      .btn:hover {
+        top: -1px;
+        cursor: pointer;
+      }
+
+      .btn-success {
+        background-color: #a8d2a8;
+        border: 1px solid #6aa46a;
+      }
+
+      .form-group label {
+        font-weight: 400;
+      }
+
+      .jumbotron {
+        padding: 2rem;
+        border-radius: 4px;
+        background-color: #a8d2a8;
+        margin-bottom: 2rem;
+        box-shadow: 1px 1px 4px rgba(0, 0, 0, .2);
+      }
+
+      .center {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="jumbotron">
+        <h3 class="center">Create Account</h3>
+      </section>
+      <form name="user" method="POST">
+        <div class="form-group">
+          <label class="">Name</label>
+          <input type="text" name="name" class="form-control" required/>
+        </div>
+        <div class="form-group">
+          <label class="">Email</label>
+          <input type="email" name="email" class="form-control" required/>
+        </div>
+        <div class="form-group">
+          <label class="">Password</label>
+          <input type="password" name="password" class="form-control" required/>
+        </div>
+        <div class="form-group">
+          <button type="submit" class="btn btn-success" name="submit">
+            Register
+          </button>
+        </div>
+      </form>
+    </main>
+    <script>
+      function register(user) {
+        return fetch('/users', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(user)
+        });
+      }
+
+      document.forms.user.onsubmit = function(event) {
+        event.preventDefault();
+
+        const user = {};
+        user.name = document.forms.user.name.value;
+        user.email = document.forms.user.email.value;
+        user.password = document.forms.user.password.value;
+
+        register(user).then(response => {
+          alert('registration successful');
+          document.forms.user.reset();
+        });
+      };
+    </script>
+  </body>
+</html>

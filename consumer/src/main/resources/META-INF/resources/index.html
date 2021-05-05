@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kafka consumer</title>
+    <style>
+      html {
+        font-size: 62.5%;
+      }
+
+      body {
+        font-size: 1.6rem;
+        color: #646464;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      main {
+        max-width: 1024px;
+        margin: auto;
+        margin-top: 6rem;
+      }
+
+      .jumbotron {
+        padding: 2rem;
+        border-radius: 4px;
+        background-color: #a8d2a8;
+        margin-bottom: 2rem;
+        box-shadow: 1px 1px 4px rgba(0, 0, 0, .2);
+      }
+
+      .center {
+        text-align: center;
+      }
+
+      .emails table,
+      th,
+      td {
+        border: 1px solid rgba(0, 0, 0, 0.2);
+      }
+
+      .emails table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .emails th,
+      td {
+        text-align: left;
+        padding: 0.5rem;
+      }
+
+      .btn {
+        position: relative;
+        padding: 0.8rem 1.2rem;
+        border: 1px solid gray;
+        border-radius: 4px;
+        color: #4e4e4e;
+        font-weight: 400;
+        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn:hover {
+        top: -1px;
+        cursor: pointer;
+      }
+
+      .btn-danger {
+        background-color: #ff8c8c;
+        border: 1px solid #eb4545;
+      }
+
+      .operations {
+        text-align: right;
+        margin-bottom: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="jumbotron">
+        <h3 class="center">Sent Emails</h3>
+      </section>
+      <section class="emails">
+        <div class="operations">
+          <button class="btn btn-danger" id="clear">clear</button>
+          <button class="btn" id="refresh">refresh</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>SN</th>
+              <th>From</th>
+              <th>To</th>
+              <th>Body</th>
+            </tr>
+          </thead>
+          <tbody id="emails"></tbody>
+        </table>
+      </section>
+    </main>
+    <script>
+      const table = document.getElementById("emails");
+
+      document.getElementById("refresh").onclick = (e) => {
+        populate(table);
+      };
+
+      document.getElementById("clear").onclick = (e) => {
+        fetch("/emails", { method: "DELETE" }).then(
+          (res) => (table.innerHTML = "")
+        );
+      };
+
+      function row(data) {
+        const tr = document.createElement("tr");
+        for (key in data) {
+          let td = document.createElement("td");
+          td.innerText = data[key];
+          tr.appendChild(td);
+        }
+        return tr;
+      }
+
+      function populate(table) {
+        table.innerHTML = "";
+        fetch("emails")
+          .then((res) => res.json())
+          .then((emails) => {
+            emails.forEach((email) => table.appendChild(row(email)));
+          });
+      }
+
+      populate(table);
+
+      const socket = new WebSocket(`ws://${location.host}/emails`);
+      socket.onopen = () => console.log("socket connected");
+      socket.onmessage = (m) => table.appendChild(row(JSON.parse(m.data)));
+    </script>
+  </body>
+</html>
