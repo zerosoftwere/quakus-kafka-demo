@@ -23,14 +23,26 @@ do so in their respective folders
 
 ## Running the application
 
-You can run your application in dev mode that enables live coding using:
+Run this command in the root folder where the docker-compose.yml file is located:
 ```shell script
 docker-compose up
 ```
+This would start up zookeeper, kafka, and the producer / consumer applications. make sure both (producer / consumer) applications have been packaged.
 
 ## Stopping the application
 
-The application would be removed using:
+You can shutdonw the containers using:
+```shell script
+docker-compose stop
+```
+You can also stop and start individually containers using:
+```shell script
+docker-compose stop consumer
+```
+```shell script
+docker-compose start producer
+```
+Lastly to remove the containers:
 ```shell script
 docker-compose down
 ```
