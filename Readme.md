@@ -31,7 +31,7 @@ This would start up zookeeper, kafka, and the producer / consumer applications. 
 
 ## Stopping the application
 
-You can shutdonw the containers using:
+You can shutdown the containers using:
 ```shell script
 docker-compose stop
 ```
